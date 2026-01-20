@@ -1,0 +1,102 @@
+openapi: 3.1.0
+info:
+  title: Task Management API
+  description: API for task management with DynamoDB storage
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+
+paths:
+  /tasks:
+    post:
+      operationId: createTask
+      summary: Create new task
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTaskRequest'
+      responses:
+        '200':
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          description: Invalid input data
+
+    get:
+      operationId: getAllTasks
+      summary: List 5 most recent tasks
+      responses:
+        '200':
+          description: List of recent tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+
+  /tasks/{id}:
+    get:
+      operationId: getTaskById
+      summary: Get task by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Task found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '404':
+          description: Task not found
+
+components:
+  schemas:
+    CreateTaskRequest:
+      type: object
+      required: [title, description, priority]
+      properties:
+        title:
+          type: string
+          example: "Review code"
+          minLength: 1
+        description:
+          type: string
+          example: "Review pull request #123"
+        priority:
+          type: string
+          enum: [LOW, MEDIUM, HIGH]
+          example: "MEDIUM"
+
+    Task:
+      type: object
+      properties:
+        partitionKey:
+          type: string
+          example: "TASK#550e8400-e29b-41d4-a716-446655440001"
+          readOnly: true
+        sortKey:
+          type: string
+          example: "2026-01-20T11:50:00Z"
+          readOnly: true
+        title:
+          type: string
+          example: "Review code"
+        description:
+          type: string
+          example: "Review pull request #123"
+        priority:
+          type: string
+          enum: [LOW, MEDIUM, HIGH]
+          example: "MEDIUM"
