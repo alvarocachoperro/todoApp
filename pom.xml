@@ -81,6 +81,16 @@
             <artifactId>jackson-databind-nullable</artifactId>
             <version>0.2.8</version>
         </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-coroutines-core</artifactId>
+            <version>1.10.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-coroutines-reactor</artifactId>
+            <version>1.10.1</version>
+        </dependency>
 
     </dependencies>
 
@@ -123,20 +133,20 @@
                         </goals>
                         <configuration>
                             <inputSpec>${project.basedir}/src/main/resources/static/todoapp.yaml</inputSpec>
-                            <generatorName>spring</generatorName>
-                            <apiPackage>com.example.todoapp.generated.api</apiPackage>
-                            <modelPackage>com.example.todoapp.generated.domain</modelPackage>
-                            <invokerPackage>com.example.todoapp.invoker</invokerPackage>
+                            <generatorName>kotlin-spring</generatorName>
+                            <apiPackage>org.example.todoapp.generated.api</apiPackage>
+                            <modelPackage>org.example.todoapp.generated.domain</modelPackage>
+                            <invokerPackage>org.example.todoapp.invoker</invokerPackage>
                             <addCompileSourceRoot>true</addCompileSourceRoot>
                             <generateApis>true</generateApis>
                             <generateModels>true</generateModels>
                             <generateSupportingFiles>true</generateSupportingFiles>
                             <configOptions>
                                 <useSpringBoot3>true</useSpringBoot3>
-                                <interfaceOnly>false</interfaceOnly>
+                                <interfaceOnly>true</interfaceOnly>
                                 <useTags>true</useTags>
                                 <controllerSuffix>Controller</controllerSuffix>
-                                <sourceFolder>src/gen/main/kotlin</sourceFolder>
+                                <sourceFolder>src/main/kotlin</sourceFolder>
                             </configOptions>
                         </configuration>
                     </execution>
