@@ -11,9 +11,9 @@ import software.amazon.awssdk.enhanced.dynamodb.Key
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema
 
 @Repository
-class TaskRepositoryImpl (private val dynamoDbEnhancedClient: DynamoDbEnhancedClient
-) : TaskRepository{
-
+class TaskRepositoryImpl(
+    private val dynamoDbEnhancedClient: DynamoDbEnhancedClient,
+) : TaskRepository {
     private val table: DynamoDbTable<TaskEntity> =
         dynamoDbEnhancedClient.table("Tasks", TableSchema.fromBean(TaskEntity::class.java))
 
@@ -28,6 +28,16 @@ class TaskRepositoryImpl (private val dynamoDbEnhancedClient: DynamoDbEnhancedCl
     }
 
     override fun findById(id: String): Task? =
-        table.getItem(Key.builder().partitionValue(id).build())
+        table
+            .getItem(Key.builder().partitionValue(id).build())
             ?.let { TaskMapper.toDomain(it) }
+
+    override fun count(): Long {
+        // TODO("Comprobar el coste de esta operación en DynamoDB")
+        return table
+            .scan()
+            .items()
+            .count()
+            .toLong()
+    }
 }

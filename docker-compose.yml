@@ -1,0 +1,44 @@
+# docker-compose.yml
+version: '3.8'
+networks:
+  todo-network:
+    driver: bridge
+
+services:
+  dynamodb-local:
+    image: amazon/dynamodb-local:latest
+    container_name: dynamodb-local
+    ports:
+      - "8000:8000"
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ."
+    working_dir: /home/dynamodblocal
+    volumes:
+      - dynamodb-data:/home/dynamodblocal
+    user: "0:0"
+    networks:
+      todo-network:
+        aliases:
+          - dynamodb-local
+
+  app:
+    build: .
+    container_name: todo-app
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=local
+      - AWS_DYNAMODB_ENDPOINT=http://dynamodb-local:8000
+    depends_on:
+      - dynamodb-local
+    volumes:
+      - /app/node_modules
+    networks:
+      todo-network:
+        aliases:
+          - app-service
+    entrypoint: ["sh", "-c", "java -jar app.jar || tail -f /dev/null"]
+
+volumes:
+  dynamodb-data:
+
+
