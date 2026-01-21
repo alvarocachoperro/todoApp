@@ -59,7 +59,18 @@ class TaskController(private val taskService: TaskService) : DefaultApi {
     }
 
     override fun getTaskById(id: String): ResponseEntity<GeneratedTask> {
-        // La implementación actual del servicio no tiene getTaskById
-        return super.getTaskById(id)
+        val task = taskService.getTasksById(id)
+
+        val responseTask = GeneratedTask(
+            title = task?.titulo,
+            description = task?.descripcion,
+            priority = when (task?.prioridad) {
+                Prioridad.BAJA -> GeneratedTask.Priority.LOW
+                Prioridad.MEDIA -> GeneratedTask.Priority.MEDIUM
+                Prioridad.ALTA -> GeneratedTask.Priority.HIGH
+                else -> {}
+            } as GeneratedTask.Priority?
+        )
+        return ResponseEntity.ok(responseTask)
     }
 }

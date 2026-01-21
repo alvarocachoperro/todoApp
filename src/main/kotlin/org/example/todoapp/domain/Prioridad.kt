@@ -1,5 +1,5 @@
 package org.example.todoapp.domain
 
-enum class Prioridad {
-    BAJA, MEDIA, ALTA
+enum class Prioridad(val value: Int) {
+    BAJA(3), MEDIA(2), ALTA(1)
 }
